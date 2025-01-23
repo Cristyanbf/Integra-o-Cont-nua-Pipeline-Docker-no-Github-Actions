@@ -17,6 +17,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Enable Docker daemon
+      uses: docker/enable-docker-daemon@v1
+
     - name: Set up Go
       uses: actions/setup-go@v3
       with:
@@ -25,21 +28,15 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
 
-    - name: Install Docker Compose
-      run: |
-        sudo curl -L "https://github.com/docker/compose/releases/download/<versão>/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-        sudo chmod +x /usr/local/bin/docker-compose
-      
     - name: Build-DB
       run: docker-compose build
-      
+
     - name: Create-DB
       run: docker-compose up -d
 
     - name: Test
-      run: go test -v main_test.go 
-      
-  
+      run: go test -v ./main_test.go 
+
   build:
     needs: test
     runs-on: ${{ matrix.os }}
@@ -49,4 +46,4 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build
-      run: go build -v main.go
+      run: go build -v main.go  
