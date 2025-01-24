@@ -25,7 +25,7 @@ jobs:
       with:
         go-version: ${{ matrix.go_version }}
     - name: Build Docker image
-      run: docker build -t your-image-name 
+      run: docker buildx build -t your-image-name .
     - name: Create-DB
       run: docker run -d your-image-name
     - name: Test
