@@ -1,18 +1,19 @@
-name: Go
+name: CI
 
 on:
   push:
-    branches: [ Aula_1 ]
+    branches: ['*']
   pull_request:
-    branches: [ Aula_1 ]
+    branches: ['*']
 
 jobs:
 
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         go_version: ['1.18', '1.17', '>=1.18']
+        os: ['ubuntu-latest', 'ubuntu-18.04']
     steps:
     - uses: actions/checkout@v3
 
@@ -22,15 +23,14 @@ jobs:
         go-version: ${{ matrix.go_version }}
       
     - name: Build-DB
-      run: docker-compose build
+      run: docker build
       
     - name: Create-DB
       run: docker-compose up -d
 
     - name: Test
       run: go test -v main_test.go 
-      
-  
+
   build:
     needs: test
     runs-on: ${{ matrix.os }}
@@ -38,6 +38,16 @@ jobs:
       matrix:
         os: ['ubuntu-latest', 'ubuntu-18.04']
     steps:
-    - uses: actions/checkout@v3
-    - name: Build
-      run: go build -v main.go
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '^1.18'
+      - run: go build ./...
+      - run: go test ./...
+      - name: Build Docker image
+        run: docker build -t ${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }} .
+      - name: Build
+        run: go build -v main.go
+      - name: Publish Docker image
+        run: |
+          docker push ${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}
