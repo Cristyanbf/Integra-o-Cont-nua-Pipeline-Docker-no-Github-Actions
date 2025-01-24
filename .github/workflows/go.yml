@@ -24,10 +24,10 @@ jobs:
       uses: actions/setup-go@v3
       with:
         go-version: ${{ matrix.go_version }}
-    - name: Build-DB
-      run: docker-compose build
+    - name: Build Docker image
+      run: docker build -t your-image-name 
     - name: Create-DB
-      run: docker-compose up -d
+      run: docker run -d your-image-name
     - name: Test
       run: go test -v main_test.go
 
