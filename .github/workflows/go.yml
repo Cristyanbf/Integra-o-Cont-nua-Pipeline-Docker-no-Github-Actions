@@ -6,10 +6,6 @@ on:
   pull_request:
     branches: ['*']
 
-env:
-  DOCKER_IMAGE_NAME: your-image-name
-  GO_VERSION: '1.18, 1.17, >=1.18'
-
 jobs:
 
   test:
@@ -20,16 +16,20 @@ jobs:
         os: ['ubuntu-latest', 'ubuntu-18.04']
     steps:
     - uses: actions/checkout@v3
+
     - name: Set up Go
       uses: actions/setup-go@v3
       with:
         go-version: ${{ matrix.go_version }}
-    - name: Build Docker image
-      run: docker buildx build -t your-image-name .
+      
+    - name: Build-DB
+      run: docker-compose build
+      
     - name: Create-DB
-      run: docker run -d your-image-name
+      run: docker-compose up -d
+
     - name: Test
-      run: go test -v main_test.go
+      run: go test -v main_test.go 
 
   build:
     needs: test
@@ -38,11 +38,16 @@ jobs:
       matrix:
         os: ['ubuntu-latest', 'ubuntu-18.04']
     steps:
-    - uses: actions/checkout@v3
-    - name: Build Docker image
-      run: docker build -t ${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }} .
-    - name: Build
-      run: go build -v main.go
-    - name: Publish Docker image
-      run: |
-        docker push ${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '^1.18'
+      - run: go build ./...
+      - run: go test ./...
+      - name: Build Docker image
+        run: docker build -t ${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }} .
+      - name: Build
+        run: go build -v main.go
+      - name: Publish Docker image
+        run: |
+          docker push ${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}
