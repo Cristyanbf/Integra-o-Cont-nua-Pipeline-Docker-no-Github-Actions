@@ -54,8 +54,15 @@ jobs:
       with:
         name: Api Go
         path: main
-   
+
   Docker:
    needs: build
    uses: ./.github/workflows/docker.yml
    secrets: inherit
+
+  Deploy:
+   needs: build
+   uses: ./.github/workflows/ec2.yml
+   secrets: inherit
+
+     
