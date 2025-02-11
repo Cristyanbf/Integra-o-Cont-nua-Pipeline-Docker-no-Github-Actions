@@ -60,9 +60,15 @@ jobs:
    uses: ./.github/workflows/docker.yml
    secrets: inherit
 
-  Deploy:
-   needs: build
-   uses: ./.github/workflows/ec2.yml
+# Realizando a mudanã de EC2 para ECS. Então todo o deploy de EC2 será comentado.
+ # Deploy-EC2:
+  # needs: build
+  # uses: ./.github/workflows/ec2.yml
+  # secrets: inherit
+
+  Deploy-ECS:
+   needs: Docker
+   uses: ./.github/workflows/ecs.yml
    secrets: inherit
 
      
