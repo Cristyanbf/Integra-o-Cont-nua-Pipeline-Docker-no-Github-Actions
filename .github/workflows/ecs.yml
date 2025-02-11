@@ -37,8 +37,8 @@ jobs:
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
         task-definition: task-definition.json
-        container-name: my-container
-        image: ${{ steps.build-image.outputs.image }}
+        container-name: Go
+        image: cristyanbf/testeci:latest
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v2
