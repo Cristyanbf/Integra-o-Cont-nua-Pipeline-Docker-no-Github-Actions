@@ -14,4 +14,4 @@ RUN chmod +x main
 
 COPY ./templates/ templates/
 
-CMD [ "./main.exe" ]
+CMD [ "./main" ]
