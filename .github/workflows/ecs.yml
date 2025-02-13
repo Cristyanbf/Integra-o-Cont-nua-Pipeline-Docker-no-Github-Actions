@@ -15,7 +15,7 @@ jobs:
         aws-region: us-east-2
 
     - name: AWS describe task definition
-      run: aws ecs describe-task-definition --task-definition TAREFA_API-GO:1 --query taskDefinition > task-definition.json
+      run: aws ecs describe-task-definition --task-definition TAREFA_API-GO --query taskDefinition > task-definition.json
 
     - name: Login to Amazon ECR
       id: login-ecr
