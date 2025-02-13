@@ -10,7 +10,7 @@ ENV USER=root PASSWORD=root DBNAME=root
 
 COPY "./main.exe" main.exe
 
-RUN chmod +x main.exe
+RUN chmod +x "./main.exe"
 
 COPY ./templates/ templates/
 
